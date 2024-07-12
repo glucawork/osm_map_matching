@@ -9,10 +9,8 @@ authors:
   - name: Gianluca Rossi
     orcid: 0000-0002-6440-8203
     equal-contrib: true
-    affiliation: 1 # (Multiple affiliations must be quoted)
 affiliations:
  - name: Università di Tor Vergata - Roma, Italy
-   index: 1
 date: 12 July 2024
 bibliography: paper.bib
 
@@ -20,7 +18,7 @@ bibliography: paper.bib
 
 # Summary
 
-[@Duffield2022] -> "(Duffield et al., 2022)"
+[@Duffield2022]
 
 # Statement of need
 
@@ -37,7 +35,5 @@ Figure sizes can be customized by adding an optional second parameter:
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
 
 # References
