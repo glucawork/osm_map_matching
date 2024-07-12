@@ -1,5 +1,5 @@
 ---
-title: 'Gala: A Python package for galactic dynamics'
+title: 'osm_map_matching: a QGIS plugin that calculates a match between a vector of points and OSM highways'
 tags:
   - Python
   - astronomy
