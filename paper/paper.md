@@ -18,7 +18,7 @@ bibliography: paper.bib
 
 # Summary
 
-[@Duffield2022]
+[@Duffield2022, @Jung2019]
 
 # Statement of need
 
