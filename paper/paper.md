@@ -1,11 +1,10 @@
 ---
 title: 'osm_map_matching: a QGIS plugin that calculates a match between a vector of points and OSM highways'
 tags:
-  - Python
-  - astronomy
-  - dynamics
-  - galactic dynamics
-  - milky way
+  - qgis plugin
+  - map-matching
+  - openstreetmap
+  - python
 authors:
   - name: Adrian M. Price-Whelan
     orcid: 0000-0000-0000-0000
