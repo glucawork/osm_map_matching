@@ -20,7 +20,7 @@ bibliography: paper.bib
 
 # Summary
 
-`[@Duffield2022]` -> "(Duffield et al., 2022)"
+[@Duffield2022] -> "(Duffield et al., 2022)"
 
 # Statement of need
 
