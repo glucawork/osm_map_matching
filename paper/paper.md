@@ -6,7 +6,7 @@ tags:
   - openstreetmap
   - python
 authors:
-  - name: Adrian M. Price-Whelan
+  - name: Gianluca Rossi
     orcid: 0000-0000-0000-0000
     equal-contrib: true
     affiliation: "1, 2" # (Multiple affiliations must be quoted)
