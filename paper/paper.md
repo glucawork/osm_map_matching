@@ -20,9 +20,9 @@ bibliography: paper.bib
 
 In the map-matching problem, a sequence of geographic positions, typically obtained from GPS data, must be aligned with the routes depicted in a digital map. The aim is to accurately determine the most likely route taken by a moving object, such as a vehicle or pedestrian, by matching the observed data points with the roads or pathways described by the map.
 
-`osm-map-matching` is a Python-based QGIS plugin [@QGIS] designed to match an input vector layer of observed geographic positions with corresponding routes from OpenStreetMap.
+`osm-map-matching` is a Python-based QGIS plugin [@QGIS] designed to match an input vector layer of observed geographic positions with corresponding routes from OpenStreetMap [@OSM]. The output is a vector layer containing linestrings that represent the matched routes. Each linestring in the vector corresponds to a continuous segment characterized by consistent features extracted from the map data.
 
-[@Duffield2022, @Jung2019]
+The solution used employs a topology-based algorithm that calculates the shortest path from points in the road network that have specific proximity characteristics to the input points. This resulting algorithm is significantly faster than others [@Duffield2022, @Jung2019] without sacrificing the quality of the solutions.
 
 # Statement of need
 
