@@ -32,6 +32,8 @@ The two plugins are based on Hidden Markov Models, known for their high time com
 
 Additionally, we were unable to fully get the two plugins to work, possibly due to lack of maintenance as they have not been updated in the past two years.
 
+# Functionality
+
 # Figures
 
 Figures can be included like this:
