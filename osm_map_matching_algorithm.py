@@ -142,7 +142,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             feedback.setProgress(int(current * total))
             
         feedback.pushInfo('Analizing')
-        G, path = ta.analyze(points_list[::-1], max_dist, feedback)
+        G, path = ta.analyze(points_list, max_dist, feedback)
         
         out_df = ta.make_out_dataframe(G, path, log=feedback)
         

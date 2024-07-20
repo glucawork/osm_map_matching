@@ -254,7 +254,7 @@ def analyze(points_list, max_dist, feedback = None):
                 cleanpath.append(path[i])
             else:
                 j = len(cleanpath)-1
-                while j >= 0 and distance( osm.node2point(G,cleanpath[j]), osm.node2point(G, path[i]) ).meters < 10 and cleanpath[j] != path[i]:
+                while j >= 0 and distance( osm.node2point(G,cleanpath[j]), osm.node2point(G, path[i]) ).meters < 15 and cleanpath[j] != path[i]:
                     j -= 1
                 if cleanpath[j] == path[i]:
                     cleanpath = cleanpath[:j+1]
