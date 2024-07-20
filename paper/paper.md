@@ -26,13 +26,15 @@ The solution used employs a topology-based algorithm that calculates the shortes
 
 # Statement of need
 
-As far as we know there exist two map matching plugin for QGIS, *Offline-MapMatching* [@Jung2019] and , *Assisted-MapMatching* [@Gelb]. 
+As far as we know there exist two map matching plugin for QGIS, *Offline-MapMatching* [@Jung2019] and, *Assisted-MapMatching* [@Gelb]. 
 
 The two plugins are based on Hidden Markov Models, known for their high time complexity [@newson2009hidden], resulting in long execution times. Our plugin's algorithm computes, for each input point $p$, the shortest-path tree of a small region centered around $p$, significantly improving its practical speed.
 
 Additionally, we were unable to fully get the two plugins to work, possibly due to lack of maintenance as they have not been updated in the past two years.
 
 # Functionality
+
+
 
 # Figures
 

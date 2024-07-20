@@ -14,10 +14,10 @@ import sys
 from geopy.point import Point
 
 
-from shapely import LineString as shLineString
-from shapely import Point as shPoint
+#from shapely import LineString as shLineString
+#from shapely import Point as shPoint
 
-import geopandas as gpd
+#import geopandas as gpd
 
 sys.setrecursionlimit(1500)
 
@@ -284,16 +284,16 @@ def make_out_dataframe(G, path, log=None):
                 current_linestring['osm_id'] = way_id
                 if way_id != None:
                     current_linestring['tags'] = G.edges[p, q]['data'].tags
-                points.extend( [ shPoint(G.nodes[p]['data'].lon, G.nodes[p]['data'].lat), shPoint(G.nodes[q]['data'].lon, G.nodes[q]['data'].lat) ] )
+                points.extend( [ [G.nodes[p]['data'].lon, G.nodes[p]['data'].lat], [G.nodes[q]['data'].lon, G.nodes[q]['data'].lat] ] )
             elif way_id == current_linestring['osm_id']:
-                points.append(shPoint( G.nodes[q]['data'].lon, G.nodes[q]['data'] .lat) )
+                points.append( [ G.nodes[q]['data'].lon, G.nodes[q]['data'] .lat ] )
             else:
-                current_linestring['geometry'] = shLineString(points)
+                current_linestring['geometry'] = points
                 linestrings.append(current_linestring)
                 current_linestring = {}
                 points = []
                 again = True # repeat for the same p and q
             
         
-    out_gdf = gpd.GeoDataFrame(linestrings)    
-    return out_gdf
+    #out_gdf = gpd.GeoDataFrame(linestrings)    
+    return linestrings
