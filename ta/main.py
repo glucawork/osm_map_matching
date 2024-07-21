@@ -176,7 +176,8 @@ def analyze(points_list, max_dist, feedback = None):
             if dummypath:
                 startnode,mindist = osm.closerNodeCloserEdge(Gp, p)
             else:
-                (dist,shortestpaths,alledges) = single_source_dijkstra(Gp, startnode, 1.5*distance(osm.node2point(Gp, startnode), p).meters,weight='w')
+                (dist,shortestpaths,alledges) = single_source_dijkstra(Gp, startnode,\
+                    max(max_dist,1.5*distance(osm.node2point(Gp, startnode), p).meters), weight='w')
                 x = startnode
                 (mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPathNew(Gp, alledges, p )
                 if mindist1 != None and abs(mindist-mindist1) < 3:
