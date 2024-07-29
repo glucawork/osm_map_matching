@@ -173,18 +173,24 @@ def analyze(points_list, max_dist, feedback = None):
             feedback.setProgress(int(i * n_points))
         if nextindex == -1 or i < nextindex:
             p = points_list[i]
+            
+            dd = distance(osm.node2point(Gp, startnode), p).meters
+            
             if dummypath:
                 startnode,mindist = osm.closerNodeCloserEdge(Gp, p)
             else:
                 (dist,shortestpaths,alledges) = single_source_dijkstra(Gp, startnode,\
                     max(max_dist, 1.5*distance(osm.node2point(Gp, startnode), p).meters), weight='w')
                 x = startnode
-                (mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPathNew(Gp, alledges, p )
+                (mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPath3(Gp, alledges, dist, p )
+                
+                
+                #feedback.pushInfo(str(dist[startnode])+','+str(dd))
                 if mindist1 != None and abs(mindist-mindist1) < 3:
                     #print(abs(mindist-mindist1))
                     startnode = x
                     continue
-            # while mindist > 50 we create an unrecognized segment composed
+            # while mindist > max_dist we create an unrecognized segment composed
             # by new dummy nodes added to the graph
             if mindist < 0 or mindist > max_dist:
                 startnode = 'unrec'+str(p.longitude)+str(p.latitude)

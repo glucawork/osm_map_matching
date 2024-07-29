@@ -99,7 +99,32 @@ def closerNodeCloserEdgeInPathNew(G, edges, gpxpoint):
         ret = emin[1]
     
     for e in sorted_edges[1:]:
-        if e[0] != emin[0] and e[1] != emin[0] and e[0] != emin[1] and e[1] != emin[1]:
+        if e[0] != emin[0] and e[1] != emin[0] and e[0] != emin[1] and e[1] != emin[1]: # not adjacent with emin
+            mindist1 = geoutils.pointEdgeDist(node2point(G, e[0]), node2point(G, e[1]), gpxpoint).meters
+            break
+    
+    return (mindist0, mindist1, ret)
+    
+def closerNodeCloserEdgeInPath3(G, edges, dist, gpxpoint):
+    mindist0, mindist1, ret = None, None, None
+    
+    # mindist0 e mindist1 sono rispettivamente la distanza all'atrco più
+    # vicino e dall'arco subito più distante
+    #
+    # se mindist0 e mindist1 sono simili il nodo andrebbe ignorato
+    
+    
+    sorted_edges = sorted(edges, key=lambda e: geoutils.pointEdgeDist(node2point(G, e[0]), node2point(G, e[1]), gpxpoint).meters+(dist[e[0]]+dist[e[1]])/2)
+
+    emin = sorted_edges[0]
+    mindist0 = geoutils.pointEdgeDist(node2point(G, emin[0]) ,node2point(G, emin[1]), gpxpoint).meters
+    if distance(node2point(G, emin[0]), gpxpoint) < distance(node2point(G, emin[1]), gpxpoint):
+        ret = emin[0]
+    else:
+        ret = emin[1]
+    
+    for e in sorted_edges[1:]:
+        if e[0] != emin[0] and e[1] != emin[0] and e[0] != emin[1] and e[1] != emin[1]: # not adjacent with emin
             mindist1 = geoutils.pointEdgeDist(node2point(G, e[0]), node2point(G, e[1]), gpxpoint).meters
             break
     
