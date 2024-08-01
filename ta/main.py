@@ -98,8 +98,7 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
 
     Returns
     -------
-    A networkx graph G from osm and a list of nodes that reprenst the
-    matched path of points_df in G
+    TODO
     '''
     
     def remove_loops(path):
