@@ -25,8 +25,12 @@ def make_vector(dizionario_list):
     
     set_of_tags = set()
     for diz in dizionario_list:
-        for tag in diz['tags']:
-            set_of_tags.add(tag)
+        if diz['osm_id'] != None:
+            for tag in diz['tags']:
+                set_of_tags.add(tag)
+        else:
+            set_of_tags.add('dummy')
+            diz['tags'] = {'dummy':True}
     
     list_of_tags = list(set_of_tags)
     for tag in list_of_tags:

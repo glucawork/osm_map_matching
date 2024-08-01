@@ -50,7 +50,8 @@ def boundBBox( gt, startindex, addpoint = None ):
     #		   in any case the area of the bounding box is at most 50km^2
 
     '''
-    maxarea = 1000000 # 1km^2 in meters
+    maxarea = 10000000 # 1km^2 in meters
+    #maxarea = 10000 # 1km^2 in meters
     currentarea = 0
 	
     procpoints = 0
@@ -90,7 +91,7 @@ def boundBBox( gt, startindex, addpoint = None ):
     return (left-dlon, bottom-dlat, right+dlon, top+dlat, nextindex)
 
 
-def analyze(points_list, max_dist, feedback = None):
+def analyze(points_list, max_dist, max_candles_len, feedback = None):
     '''
     Parameters
     ----------
@@ -102,6 +103,36 @@ def analyze(points_list, max_dist, feedback = None):
     matched path of points_df in G
     '''
     
+    def remove_loops(path):
+        def find(a, p, e):
+            dist = 0
+            while p < len(a):
+                if a[p] == e:
+                    return p, dist
+                dist += distance(osm.node2point(G, a[p-1]), osm.node2point(G, a[p])).meters
+                p += 1
+            return -1, None
+        
+        if len(path) == 0:
+            return path
+        
+        clean_path = []
+        
+        i = 0
+        n_points = 100.0 / len(path) if len(path) > 0 else 0
+        while i < len(path):
+            if feedback != None:
+                feedback.setProgress(int(i * n_points))
+            x = path[i]
+            if clean_path == [] or x != clean_path[-1]:
+                clean_path.append(x)
+                j,d = find(path, i+1, x)
+                if j >= 0 and d < max_candles_len:
+                    feedback.pushInfo(str(d))
+                    i = j
+            i += 1
+            
+        return clean_path
 
 
     # -------- Computing bounding box
@@ -153,8 +184,8 @@ def analyze(points_list, max_dist, feedback = None):
         # it is created a dummy starting node
          startnode = 'unrec'+str(p.longitude)+str(p.latitude)
          Gp.add_node(startnode)
-         Gp.node[startnode] = dict(data=osm.Node(startnode, p.longitude, p.latitude))
-         Gp.node[startnode]['data'].dummy = True
+         Gp.nodes[startnode].update(dict(data=osm.Node(startnode, p.longitude, p.latitude)))
+         Gp.nodes[startnode]['data'].dummy = True
          dummypath = True
          
     path.append(startnode)
@@ -182,7 +213,10 @@ def analyze(points_list, max_dist, feedback = None):
                 (dist,shortestpaths,alledges) = single_source_dijkstra(Gp, startnode,\
                     max(max_dist, 1.5*distance(osm.node2point(Gp, startnode), p).meters), weight='w')
                 x = startnode
-                (mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPath3(Gp, alledges, dist, p )
+                if alledges == []:
+                    mindist, mindist1 = 0, 0
+                else:
+                    (mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPathNew(Gp, alledges,  p )
                 
                 
                 #feedback.pushInfo(str(dist[startnode])+','+str(dd))
@@ -197,16 +231,21 @@ def analyze(points_list, max_dist, feedback = None):
                 Gp.add_node(startnode)
                 Gp.nodes[startnode].update(dict(data=osm.Node(startnode, p.longitude, p.latitude)))
                 Gp.nodes[startnode]['data'].dummy = True
-                newedge = (path[-1], startnode)            
+                newedge = (path[-1], startnode)         
                 Gp.add_edge(newedge[0], newedge[1])
                 osm.addEdgeWeight(Gp, newedge)
                 path.append(startnode)
                 dummypath = True
+                feedback.pushInfo("creato nuovo nodo dummy")
             else:
                 if dummypath:
+                    newedge = (path[-1], startnode)         
+                    Gp.add_edge(newedge[0], newedge[1])
+                    osm.addEdgeWeight(Gp, newedge)
                     path.append(startnode)
+                    feedback.pushInfo("aggiunto nuovo nodo a path dummy")
                 else:
-                    path = path + shortestpaths[startnode]
+                    path.extend( shortestpaths[startnode] )
                 dummypath = False
         else:
             feedback.pushInfo('NEXT')
@@ -214,6 +253,7 @@ def analyze(points_list, max_dist, feedback = None):
             #downloading next osm data area
             # "-------- Computing bounding box")
             try:
+                feedback.pushInfo("calcolo nuovo bb")
                 ( left,bottom,right,top, nextindex ) = boundBBox(points_list, nextindex, (Gp.nodes[startnode]['data'].lat, Gp.nodes[startnode]['data'].lon) )
             except:
                 ErrorExit('Empty gpx file')
@@ -224,6 +264,7 @@ def analyze(points_list, max_dist, feedback = None):
             
             try:
                 osmmap = osm.download_osm(left, bottom, right, top)
+                feedback.pushInfo("Download new map")
             except:
                 ErrorExit('Error in downloading OSM data')
             
@@ -235,10 +276,13 @@ def analyze(points_list, max_dist, feedback = None):
                 # if the last node in path is dummy, in order to avoid
                 # problems with the first edge of new section
                 # it must be added in Gp
+                feedback.pushInfo("Updating graph with new dowloaded data")
                 if G.nodes[path[-1]]['data'].dummy :
-                    lndata = G.nodes[path[-1]]
-                    Gp.add_node(path[-1])
-                    Gp.nodes[path[-1]] = lndata
+                    Gp = nx.compose(G, Gp)
+                    
+                    #lndata = G.nodes[path[-1]]
+                    #Gp.add_node(path[-1])
+                    #Gp.nodes[path[-1]].update(lndata)
             except:
                 ErrorExit('Error in bouilding map graph')
             #-------- Computing sub-path")
@@ -247,28 +291,14 @@ def analyze(points_list, max_dist, feedback = None):
 
     #"===== Cleaning path")
 
-    cleanpath = []
-
-
-    # eliminazione candele più corte di 10mt
-    if False:
-        for u in path:
-            if len(cleanpath) == 0 or u != cleanpath[-1]:
-                cleanpath.append(u)
-    else:
-        for i in range(len(path)):
-            if i == 0:
-                cleanpath.append(path[i])
-            else:
-                j = len(cleanpath)-1
-                while j >= 0 and distance( osm.node2point(G,cleanpath[j]), osm.node2point(G, path[i]) ).meters < 15 and cleanpath[j] != path[i]:
-                    j -= 1
-                if cleanpath[j] == path[i]:
-                    cleanpath = cleanpath[:j+1]
-                else:
-                    cleanpath.append(path[i])
+    # removing consecutive duplicates
     
-    path = cleanpath
+    
+    
+    feedback.pushInfo('Cleaning')
+    #path = remove_loops(path)
+    
+    feedback.pushInfo(str(path))
     
     return G, path
 
@@ -300,7 +330,9 @@ def make_out_dataframe(G, path, log=None):
                 current_linestring = {}
                 points = []
                 again = True # repeat for the same p and q
-            
+    
+    current_linestring['geometry'] = points
+    linestrings.append(current_linestring)
         
     #out_gdf = gpd.GeoDataFrame(linestrings)    
     return linestrings

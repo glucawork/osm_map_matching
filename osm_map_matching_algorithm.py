@@ -60,6 +60,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
     OUTPUT = 'OUTPUT'
     VPOINTS = 'VECTOR_POINTS'
     MAXDIST = 'MAXDIST'
+    CANDLELENGTH = "CANDLELENGTH"
 
     def initAlgorithm(self, config):
         """
@@ -86,6 +87,14 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             )
         )
         
+        # the maximum tolerated distance for candles ()
+        self.addParameter(
+            QgsProcessingParameterDistance(
+                self.CANDLELENGTH,
+                self.tr('Max candles length'),
+                15
+            )
+        )
 
 
         # We add a feature sink in which to store our processed features (this
@@ -110,6 +119,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         source = self.parameterAsSource(parameters, self.VPOINTS, context)
         output_layer = self.parameterAsLayer(parameters, self.OUTPUT, context)
         max_dist = self.parameterAsDouble(parameters, self.MAXDIST, context)
+        max_candles_length = self.parameterAsDouble(parameters, self.CANDLELENGTH, context)
         
         #fieldnames = [field.name() for field in source.fields()]
 
@@ -142,9 +152,11 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             feedback.setProgress(int(current * total))
             
         feedback.pushInfo('Analizing')
-        G, path = ta.analyze(points_list, max_dist, feedback)
+        G, path = ta.analyze(points_list, max_dist, max_candles_length, feedback)
         
         out_df = ta.make_out_dataframe(G, path, log=feedback)
+        
+        #feedback.pushInfo(str(out_df))
         
         feedback.pushInfo('Vector output creation')
         output.make_vector(out_df)
