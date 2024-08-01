@@ -103,6 +103,11 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
     '''
     
     def remove_loops(path):
+        '''
+        Parameter: path list of nodes
+        Output: clean_path, a list of nodes without loop of size smaller than
+            max_candles_len
+        '''
         def find(a, p, e):
             dist = 0
             while p < len(a):
@@ -115,24 +120,31 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
         if len(path) == 0:
             return path
         
-        clean_path = []
         
-        i = 0
-        n_points = 100.0 / len(path) if len(path) > 0 else 0
-        while i < len(path):
-            if feedback != None:
-                feedback.setProgress(int(i * n_points))
-            x = path[i]
-            if clean_path == [] or x != clean_path[-1]:
-                clean_path.append(x)
-                j,d = find(path, i+1, x)
-                if j >= 0 and d < max_candles_len:
-                    i = j
-                if d != None and d > 0:
-                    feedback.pushInfo(str(d) + ' ' + x)
-            i += 1
+        
+        repeat = True
+        
+        while repeat:
+            repeat = False
+            clean_path = []
+            i = 0
+            n_points = 100.0 / len(path) if len(path) > 0 else 0
+            while i < len(path):
+                if feedback != None:
+                    feedback.setProgress(int(i * n_points))
+                x = path[i]
+                if clean_path == [] or x != clean_path[-1]:
+                    clean_path.append(x)
+                    j,d = find(path, i+1, x)
+                    if j >= 0 and d < max_candles_len:
+                        i = j
+                        # This loop might be contained in a larger one.
+                        # In the next iteration, we will check if this needs to be removed
+                        repeat = True
+                i += 1
+            path = clean_path
             
-        return clean_path
+        return path
 
 
     # -------- Computing bounding box
@@ -292,12 +304,8 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
     
     
     feedback.pushInfo('Cleaning')
-    for _ in range(10):
-        feedback.pushInfo('\t***********')
-        path = remove_loops(path)
+    path = remove_loops(path)
 
-    
-    feedback.pushInfo(str(path))
     
     return G, path
 
