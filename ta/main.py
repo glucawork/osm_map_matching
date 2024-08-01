@@ -50,8 +50,7 @@ def boundBBox( gt, startindex, addpoint = None ):
     #		   in any case the area of the bounding box is at most 50km^2
 
     '''
-    maxarea = 10000000 # 1km^2 in meters
-    #maxarea = 10000 # 1km^2 in meters
+    maxarea = 1000000 # 1km^2 in meters
     currentarea = 0
 	
     procpoints = 0
@@ -128,8 +127,9 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
                 clean_path.append(x)
                 j,d = find(path, i+1, x)
                 if j >= 0 and d < max_candles_len:
-                    feedback.pushInfo(str(d))
                     i = j
+                if d != None and d > 0:
+                    feedback.pushInfo(str(d) + ' ' + x)
             i += 1
             
         return clean_path
@@ -236,24 +236,20 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
                 osm.addEdgeWeight(Gp, newedge)
                 path.append(startnode)
                 dummypath = True
-                feedback.pushInfo("creato nuovo nodo dummy")
             else:
                 if dummypath:
                     newedge = (path[-1], startnode)         
                     Gp.add_edge(newedge[0], newedge[1])
                     osm.addEdgeWeight(Gp, newedge)
                     path.append(startnode)
-                    feedback.pushInfo("aggiunto nuovo nodo a path dummy")
                 else:
                     path.extend( shortestpaths[startnode] )
                 dummypath = False
         else:
-            feedback.pushInfo('NEXT')
 
             #downloading next osm data area
             # "-------- Computing bounding box")
             try:
-                feedback.pushInfo("calcolo nuovo bb")
                 ( left,bottom,right,top, nextindex ) = boundBBox(points_list, nextindex, (Gp.nodes[startnode]['data'].lat, Gp.nodes[startnode]['data'].lon) )
             except:
                 ErrorExit('Empty gpx file')
@@ -296,7 +292,10 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
     
     
     feedback.pushInfo('Cleaning')
-    #path = remove_loops(path)
+    for _ in range(10):
+        feedback.pushInfo('\t***********')
+        path = remove_loops(path)
+
     
     feedback.pushInfo(str(path))
     
