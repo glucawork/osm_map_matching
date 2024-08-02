@@ -54,6 +54,22 @@ Figure  \autoref{fig:routerepr}  illustrates a graphical representation of the `
 
 ![A graphical representation of the `highway` field.\label{fig:routerepr}](pictures/caffarella.jpg)
 
+Moreover, starting from the plugin output, it is possible to create a clear and concise presentation of the data through straightforward operations in the QGIS environment
+
+
+| `highway`    | `min` | `max` | `sum` | `mean`         |
+|------------|-----|-----|-----|--------------|
+| `primary`    | 67  | 74  | 141 | 70.5         |
+| `residential`| 24  | 290 | 816 | 116.57       |
+| `footway`    | 2   | 22  | 47  | 11.75        |
+| `track`      | 99  | 298 | 397 | 198.5        |
+| `path`       | 13  | 381 | 585 | 117          |
+| `service`    | 10  | 78  | 88  | 44           |
+| `steps`      | 19  | 19  | 19  | 19           |
+
+
+
+This table provides a summary of the lengths in meters for each highway type.
 
 Figure sizes can be customized by adding an optional second parameter:
 ![Caption for example figure.](figure.png){ width=20% }
