@@ -90,7 +90,7 @@ def boundBBox( gt, startindex, addpoint = None ):
     return (left-dlon, bottom-dlat, right+dlon, top+dlat, nextindex)
 
 
-def analyze(points_list, max_dist, max_candles_len, feedback = None):
+def analyze(points_list, max_dist, min_loop_size, feedback = None):
     '''
     Parameters
     ----------
@@ -105,7 +105,7 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
         '''
         Parameter: path list of nodes
         Output: clean_path, a list of nodes without loop of size smaller than
-            max_candles_len
+            max_loop_size
         '''
         def find(a, p, e):
             dist = 0
@@ -135,7 +135,7 @@ def analyze(points_list, max_dist, max_candles_len, feedback = None):
                 if clean_path == [] or x != clean_path[-1]:
                     clean_path.append(x)
                     j,d = find(path, i+1, x)
-                    if j >= 0 and d < max_candles_len:
+                    if j >= 0 and d < min_loop_size:
                         i = j
                         # This loop might be contained in a larger one.
                         # In the next iteration, we will check if this needs to be removed

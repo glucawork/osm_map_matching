@@ -60,7 +60,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
     OUTPUT = 'OUTPUT'
     VPOINTS = 'VECTOR_POINTS'
     MAXDIST = 'MAXDIST'
-    CANDLELENGTH = "CANDLELENGTH"
+    MINLOOPSIZE = "MINLOOPSIZE"
 
     def initAlgorithm(self, config):
         """
@@ -87,11 +87,11 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             )
         )
         
-        # the maximum tolerated distance for candles ()
+        # shorter loop are removed
         self.addParameter(
             QgsProcessingParameterDistance(
-                self.CANDLELENGTH,
-                self.tr('Max candles length'),
+                self.MINLOOPSIZE,
+                self.tr('Min loop size'),
                 15
             )
         )
@@ -119,7 +119,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         source = self.parameterAsSource(parameters, self.VPOINTS, context)
         output_layer = self.parameterAsLayer(parameters, self.OUTPUT, context)
         max_dist = self.parameterAsDouble(parameters, self.MAXDIST, context)
-        max_candles_length = self.parameterAsDouble(parameters, self.CANDLELENGTH, context)
+        min_loop_size = self.parameterAsDouble(parameters, self.MINLOOPSIZE, context)
         
         #fieldnames = [field.name() for field in source.fields()]
 
@@ -152,7 +152,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             feedback.setProgress(int(current * total))
             
         feedback.pushInfo('Analizing')
-        G, path = ta.analyze(points_list, max_dist, max_candles_length, feedback)
+        G, path = ta.analyze(points_list, max_dist, min_loop_size, feedback)
         
         out_df = ta.make_out_dataframe(G, path, log=feedback)
         
