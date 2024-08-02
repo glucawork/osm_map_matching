@@ -50,14 +50,10 @@ The plugin generates a route on OSM that corresponds to the input vector of poin
 |27527220|Via Franco Bartoloni|||asphalt|yes|residential|
 |123415114|||private|||service|
 
+Figure  \autoref{fig:routerepr}  illustrates a graphical representation of the `highway` field. Dashed lines are used for values such as `path`, `footway`, and `steps`, whereas a solid line represents all other values.
 
-![Caption for example figure.\label{fig:example}](pictures/caffarella.jpg)
+![A graphical representation of the `highway` field.\label{fig:routerepr}](pictures/caffarella.jpg)
 
-# Figures
-
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
 
 Figure sizes can be customized by adding an optional second parameter:
 ![Caption for example figure.](figure.png){ width=20% }
