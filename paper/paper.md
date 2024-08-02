@@ -34,9 +34,9 @@ Additionally, we were unable to fully get the two plugins to work, possibly due 
 
 # Functionality
 
-Once the plugin is launched, a vector of points, `path`, describing the route to be mapped should be provided, along with two numerical parameters, `max_dist` and `min_loop_size`. The first parameter defines the maximum allowable distance between a point in the vector and the matched element on the map. The second parameter is used during the final route cleaning phase: in this phase, small loops with a length smaller than this parameter's value are removed from the output route.
+Once the plugin is launched, a vector of points, `points_vector`, describing the route to be mapped should be provided, along with two numerical parameters, `max_dist` and `min_loop_size`. The first parameter defines the maximum allowable distance between a point in the vector and the matched element on the map. The second parameter is used during the final route cleaning phase: in this phase, small loops with a length smaller than this parameter's value are removed from the output route.
 
-
+The plugin produces a route on OSM that matches the input vector of points. The data structure used for the output is a vector of consecutive `LineStrings`; each `LineString`, in addition to the sequence of points,several fields that describe attributes of the segment. These fields are obtained from OSM.
 
 # Figures
 
