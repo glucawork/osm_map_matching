@@ -52,7 +52,7 @@ The plugin generates a route on OSM that corresponds to the input vector of poin
 
 Figure  \autoref{fig:routerepr}  illustrates a graphical representation of the `highway` field. Dashed lines are used for values such as `path`, `footway`, and `steps`, whereas a solid line represents all other values.
 
-![A graphical representation of the `highway` field.\label{fig:routerepr}](pictures/caffarella.jpg)
+![A graphical representation of the `highway` field.\label{fig:routerepr}](pictures/caffarella.jpg){ width=20% }
 
 Moreover, starting from the plugin output, it is possible to create a clear and concise presentation of the data through straightforward operations in the QGIS environment
 
@@ -71,8 +71,7 @@ Moreover, starting from the plugin output, it is possible to create a clear and 
 
 This table provides a summary of the lengths in meters for each highway type.
 
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
+# Algorithm description
 
 # Acknowledgements
 
