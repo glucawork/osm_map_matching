@@ -38,16 +38,16 @@ Once the plugin is launched, a vector of points, `points_vector`, describing the
 
 The plugin produces a route on OSM that matches the input vector of points. The data structure used for the output is a vector of consecutive `LineStrings`; each `LineString`, in addition to the sequence of points,several fields that describe attributes of the segment. These fields are obtained from OSM.
 
-osm_id|name|lanes|access|surface|oneway|highway
-122411452|Via Appia Nuova|2||asphalt|yes|primary
-25775100|Via Latina|1||asphalt|yes|residential
-842258282||||||footway
-27668251|Viale Mario Leigheb||agricultural|unpaved||track
-35125987||||ground||path
-35125959||||ground||path
-842258285||||||footway
-27527220|Via Franco Bartoloni|||asphalt|yes|residential
-123415114|||private|||service
+|osm_id|name|lanes|access|surface|oneway|highway|
+|122411452|Via Appia Nuova|2||asphalt|yes|primary|
+|25775100|Via Latina|1||asphalt|yes|residential|
+|842258282||||||footway|
+|27668251|Viale Mario Leigheb||agricultural|unpaved||track|
+|35125987||||ground||path|
+|35125959||||ground||path|
+|842258285||||||footway|
+|27527220|Via Franco Bartoloni|||asphalt|yes|residential|
+|123415114|||private|||service|
 
 
 
