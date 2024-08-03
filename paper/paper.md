@@ -77,7 +77,7 @@ OpenStreetMap data consists of *nodes*, *ways*, and *tags*. Nodes are points wit
 
 After selecting the input vector layer (`points_vector`) and specifying the two numerical parameters (`max_dist` and `min_loop_size`), the algorithm retrieves the OSM map section that includes the `points_vector`. It then constructs the road graph $G$ using the NetworkX library  [@networkx], labeling the edges of $G$ with tags extracted from OSM ways."
 
-At each iteration, the algorithm attempts to match each point in `points_vector` with a node in $G$. Let $p$ be the last matched point and $v_p$ the corresponding node in $G$, and let $q$ be the next point to be matched. The algorithm computes the shortest path tree $T_p$ in $G$, rooted at $v_p$. It then searches for the edge $e_q$ in $T_p$ that is closest to $q$ and matches $q$ to the node of $e_q$ that is nearest to $q$.
+At each iteration, the algorithm attempts to match each point in `points_vector` with a node in $G$. Let $p$ be the last matched point and $v_p$ the corresponding node in $G$, and let $q$ be the next point to be matched. The algorithm computes the shortest path tree $T_p$ in $G$, rooted at $v_p$. It then searches for the edge $e_q$ in $T_p$ that is closest to $q$ and matches $q$ to the node of $e_q$ that is nearest to $q$. More precisely, to enhance efficiency, the construction of the shortest path tree is terminated as soon as the distances exceed a cutoff value set to $1.5 \cdot \text{distance}(v_p, q)$.
 
 # Acknowledgements
 
