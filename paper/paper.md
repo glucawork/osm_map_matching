@@ -83,9 +83,13 @@ At each iteration, the algorithm attempts to match each point in `points_vector`
 
 The picture illustrates an example of how the algorithm works. The green edges represent the shortest path tree from node $v_p$, while the black edge is another graph edge. The blue arrows highlight the shortest path from $v_p$ to $v_q$. Nodes $a$, $b$, and $v_q$ are added to the solution, and the algorithm proceeds by computing a shortest path tree from $v_q$.
 
+In the case where the distance between $q$ and $e_q$ is greater than `max_dist`, a dummy node is inserted into the solution instead of the shortest path between $p$ and $v_q$. Dummy nodes will be added in the same way until an edge is found whose distance from the current node is smaller than max_dist.
+
 ## Optimizations
 
-Observe that, to enhance efficiency, the construction of the shortest path tree is terminated as soon as the distances exceed a cutoff value set to $1.5 \cdot \text{distance}(v_p, q)$.
+Since the area covering the entire input vector layer can be extensive, smaller portions of the graph (at most one square kilometer) are downloaded along the input path, and the algorithm operates on these smaller graphs. This approach reduces memory usage and enhances performance.
+
+Calculating the shortest distances to nodes that are too far from the root relative to $q$ is inefficient. To enhance performance, the construction of the shortest path trees are stopped when the distances exceed a cut-off value set at $1.5 \cdot \text{distance}(v_p, q)$.
 
 
 # Acknowledgements
