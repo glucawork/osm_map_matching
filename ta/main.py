@@ -14,11 +14,6 @@ import sys
 from geopy.point import Point
 
 
-#from shapely import LineString as shLineString
-#from shapely import Point as shPoint
-
-#import geopandas as gpd
-
 sys.setrecursionlimit(1500)
 
 
@@ -26,11 +21,6 @@ distance = distance.GreatCircleDistance
 
 offlineMode = False
 
-    
-def ErrorExit( message ):
-    print(message)
-    sys.exit();
-    
 
 def boundBBox( gt, startindex, addpoint = None ):
     '''
@@ -98,8 +88,17 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
 
     Returns
     -------
-    TODO
+    
+    G, p where
+        G is a networkx graph that represents the road network
+        path is a list of nodes in G that represents the output path
+    
+    If something goes wrong, it returns None, None.
     '''
+    
+    def PrintMessage( m ):
+        if feedback != None:
+            feedback.pushInfo(str(m))
     
     def remove_loops(path):
         '''
@@ -118,8 +117,6 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
         
         if len(path) == 0:
             return path
-        
-        
         
         repeat = True
         
@@ -153,19 +150,21 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
 
     try:
         if offlineMode:
-            osmmap = './ta/osm/camposoriano.osm'
+            pass
+            # TODO
         else:
             osmmap = osm.download_osm(left, bottom, right, top)
-        #osmmap = '/home/gianluca/Downloads/map'
     except:
-        ErrorExit('Error in downloading OSM data')
+        PrintMessage('Error in downloading OSM data')
+        return None, None
 
     #-------- Computing map graph
 
     try:    
         Gp = osm.read_osm(osmmap)
     except:
-        ErrorExit('Error in building map graph')
+        PrintMessage('Error in building map graph')
+        return None, None
     
 
     if feedback != None:
@@ -174,11 +173,6 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
 
     # The graph: G.edge[u][v] = {data:tags, id:wayid-num}
     
-    
-    #print left,bottom,right,top
-    
-    #G = osm.read_osm('../../terracina.osm')
-    #G = osm.read_osm(osm.download_osm(left, bottom, right, top))
     osm.addEdgeWeights(Gp)
 
     path = []
@@ -207,7 +201,7 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
     
     # -------- Computing sub-path
 
-    # the matching path is a list of nodes osm nodes or dummy nodes
+    # the matching path is a list of osm nodes or dummy nodes
     # a dummy node is added if the "matching node" is to far
     # from the track node
     for i in range(1, len(points_list)):
@@ -229,17 +223,12 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                 else:
                     (mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPathNew(Gp, alledges,  p )
                 
-                feedback.pushInfo("spt")
-                #feedback.pushInfo(str(dist[startnode])+','+str(dd))
                 if mindist1 != None and abs(mindist-mindist1) < 3:
-                    #print(abs(mindist-mindist1))
                     startnode = x
-                    feedback.pushInfo("due archi vicini")
                     continue
             # while mindist > max_dist we create an unrecognized segment composed
             # by new dummy nodes added to the graph
             if mindist < 0 or mindist > max_dist:
-                feedback.pushInfo("min dist troppo grande")
                 startnode = 'unrec'+str(p.longitude)+str(p.latitude)
                 Gp.add_node(startnode)
                 Gp.nodes[startnode].update(dict(data=osm.Node(startnode, p.longitude, p.latitude)))
@@ -251,15 +240,13 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                 dummypath = True
             else:
                 if dummypath:
-                    feedback.pushInfo("dumy path")
                     newedge = (path[-1], startnode)         
                     Gp.add_edge(newedge[0], newedge[1])
                     osm.addEdgeWeight(Gp, newedge)
                     path.append(startnode)
                 else:
                     path.extend( shortestpaths[startnode] )
-                    feedback.pushInfo(str(shortestpaths[startnode]))
-                    feedback.pushInfo("extend")
+                    
                 dummypath = False
         else:
 
@@ -268,7 +255,9 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
             try:
                 ( left,bottom,right,top, nextindex ) = boundBBox(points_list, nextindex, (Gp.nodes[startnode]['data'].lat, Gp.nodes[startnode]['data'].lon) )
             except:
-                ErrorExit('Empty gpx file')
+                PrintMessage('Empty vector')
+                return None, None
+                
             
             # ................", left,bottom,right,top, '-', nextindex)
             
@@ -276,9 +265,10 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
             
             try:
                 osmmap = osm.download_osm(left, bottom, right, top)
-                feedback.pushInfo("Download new map")
+                PrintMEssage("Download new map")
             except:
-                ErrorExit('Error in downloading OSM data')
+                PrintMessage('Error in downloading OSM data')
+                return None, None
             
             #"-------- Computing map graph")
             
@@ -288,7 +278,7 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                 # if the last node in path is dummy, in order to avoid
                 # problems with the first edge of new section
                 # it must be added in Gp
-                feedback.pushInfo("Updating graph with new dowloaded data")
+                PrintMessage("Updating graph with new dowloaded data")
                 if G.nodes[path[-1]]['data'].dummy :
                     Gp = nx.compose(G, Gp)
                     
@@ -296,7 +286,8 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                     #Gp.add_node(path[-1])
                     #Gp.nodes[path[-1]].update(lndata)
             except:
-                ErrorExit('Error in bouilding map graph')
+                PrintMessage('Error in bouilding map graph')
+                return None, None
             #-------- Computing sub-path")
     
     G = nx.compose(Gp, G)
@@ -305,11 +296,8 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
 
     # removing consecutive duplicates
     
-    
-    
-    feedback.pushInfo('Cleaning')
+    PrintMessage('Cleaning')
     path = remove_loops(path)
-
     
     return G, path
 

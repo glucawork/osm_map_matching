@@ -13,14 +13,14 @@ from PyQt5.QtCore import QVariant
 import json
 
 def make_vector(dizionario_list):
-    # Creare il layer vettoriale con tipo geometrico LineString
+    # Create the vector layer with LineString geometry type
     layer = QgsVectorLayer('LineString?crs=EPSG:4326', 'Linestrings Layer', 'memory')
     provider = layer.dataProvider()
     
-    # Definire i campi (attributi) del layer
+    # Define the layer's fields (attributes)
     fields = QgsFields()
     
-    # Aggiungere campi in base agli attributi nei dizionari
+    # Add fields based on the attributes in the dictionaries
     fields.append(QgsField('osm_id', QVariant.String))
     
     set_of_tags = set()
@@ -39,17 +39,17 @@ def make_vector(dizionario_list):
     provider.addAttributes(fields)
     layer.updateFields()
     
-    # Aggiungere le features al layer
+    # Add the features to the layer
     for diz in dizionario_list:
         feature = QgsFeature()
-        # Creare la geometria LineString
+        # Create the LineString geometry
         linestring = diz.get('geometry')
         if linestring:
             points = [QgsPointXY(point[0], point[1]) for point in linestring]
             geometry = QgsGeometry.fromPolylineXY(points)
             feature.setGeometry(geometry)
         
-        # Impostare gli attributi della feature
+        # Set the feature's attributes
         list_of_attributes = [diz.get('osm_id', '')]
         
         for tag in list_of_tags:
@@ -57,11 +57,12 @@ def make_vector(dizionario_list):
         
         feature.setAttributes(list_of_attributes)
         
-        # Aggiungere la feature al provider
+        # Add the feature to the provider
         provider.addFeatures([feature])
     
-    # Aggiornare l'estensione del layer
+    # Update the layer's extent
     layer.updateExtents()
     
-    QgsProject.instance().addMapLayer(layer)
+    return layer
+    
     

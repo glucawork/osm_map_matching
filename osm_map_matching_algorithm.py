@@ -154,12 +154,12 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         feedback.pushInfo('Analizing')
         G, path = ta.analyze(points_list, max_dist, min_loop_size, feedback)
         
-        out_df = ta.make_out_dataframe(G, path, log=feedback)
-        
-        #feedback.pushInfo(str(out_df))
-        
-        feedback.pushInfo('Vector output creation')
-        output.make_vector(out_df)
+        if path != None:
+            out_df = ta.make_out_dataframe(G, path, log=feedback)
+            feedback.pushInfo('Vector output creation')
+            output_layer = output.make_vector(out_df)
+            QgsProject.instance().addMapLayer(output_layer)
+            
 
         return {self.OUTPUT: output_layer}
 

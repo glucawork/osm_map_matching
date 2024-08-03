@@ -83,10 +83,11 @@ def closerNodeCloserEdgeInPath(G, paths, gpxpoint):
 def closerNodeCloserEdgeInPathNew(G, edges, gpxpoint):
     mindist0, mindist1, ret = None, None, None
     
-    # mindist0 e mindist1 sono rispettivamente la distanza all'atrco più
-    # vicino e dall'arco subito più distante
+    # mindist0 and mindist1 represent the distance to the nearest edge
+    # and the distance to the next furthest edge, respectively.
     #
-    # se mindist0 e mindist1 sono simili il nodo andrebbe ignorato
+    # If mindist0 and mindist1 are similar, the node should be ignored.
+
     
     
     sorted_edges = sorted(edges, key=lambda e: geoutils.pointEdgeDist(node2point(G, e[0]), node2point(G, e[1]), gpxpoint).meters)
@@ -108,10 +109,11 @@ def closerNodeCloserEdgeInPathNew(G, edges, gpxpoint):
 def closerNodeCloserEdgeInPath3(G, edges, dist, gpxpoint):
     mindist0, mindist1, ret = None, None, None
     
-    # mindist0 e mindist1 sono rispettivamente la distanza all'atrco più
-    # vicino e dall'arco subito più distante
+    # mindist0 and mindist1 represent the distance to the nearest edge
+    # and the distance to the next furthest edge, respectively.
     #
-    # se mindist0 e mindist1 sono simili il nodo andrebbe ignorato
+    # If mindist0 and mindist1 are similar, the node should be ignored.
+
     
     
     sorted_edges = sorted(edges, key=lambda e: geoutils.pointEdgeDist(node2point(G, e[0]), node2point(G, e[1]), gpxpoint).meters+(dist[e[0]]+dist[e[1]])/2)

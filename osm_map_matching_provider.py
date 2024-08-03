@@ -55,7 +55,6 @@ class OsmMapMatchingProvider(QgsProcessingProvider):
         """
         self.addAlgorithm(OsmMapMatchingAlgorithm())
         # add additional algorithms here
-        # self.addAlgorithm(MyOtherAlgorithm())
 
     def id(self):
         """
