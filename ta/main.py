@@ -229,15 +229,17 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                 else:
                     (mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPathNew(Gp, alledges,  p )
                 
-                
+                feedback.pushInfo("spt")
                 #feedback.pushInfo(str(dist[startnode])+','+str(dd))
                 if mindist1 != None and abs(mindist-mindist1) < 3:
                     #print(abs(mindist-mindist1))
                     startnode = x
+                    feedback.pushInfo("due archi vicini")
                     continue
             # while mindist > max_dist we create an unrecognized segment composed
             # by new dummy nodes added to the graph
             if mindist < 0 or mindist > max_dist:
+                feedback.pushInfo("min dist troppo grande")
                 startnode = 'unrec'+str(p.longitude)+str(p.latitude)
                 Gp.add_node(startnode)
                 Gp.nodes[startnode].update(dict(data=osm.Node(startnode, p.longitude, p.latitude)))
@@ -249,12 +251,15 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                 dummypath = True
             else:
                 if dummypath:
+                    feedback.pushInfo("dumy path")
                     newedge = (path[-1], startnode)         
                     Gp.add_edge(newedge[0], newedge[1])
                     osm.addEdgeWeight(Gp, newedge)
                     path.append(startnode)
                 else:
                     path.extend( shortestpaths[startnode] )
+                    feedback.pushInfo(str(shortestpaths[startnode]))
+                    feedback.pushInfo("extend")
                 dummypath = False
         else:
 
