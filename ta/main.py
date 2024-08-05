@@ -265,7 +265,7 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
             
             try:
                 osmmap = osm.download_osm(left, bottom, right, top)
-                PrintMEssage("Download new map")
+                PrintMessage("Download new map")
             except:
                 PrintMessage('Error in downloading OSM data')
                 return None, None

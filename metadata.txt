@@ -5,7 +5,7 @@
 [general]
 name=Osm Map Matching
 qgisMinimumVersion=3.0
-description=Plugin che fa qualche cosa
+description=Porcamiseria
 version=0.1
 author=Gianluca Rossi
 email=grossi@gmail.com
@@ -27,7 +27,7 @@ tags=python
 
 homepage=http://homepage
 category=Analysis
-icon=icon.png
+icon=./icon/icon.png
 # experimental flag
 experimental=True
 

@@ -39,6 +39,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterDistance,
+                       QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterVectorDestination,
                        QgsCoordinateTransform,
@@ -79,23 +80,40 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         )
 
         # the maximum tolerated distance between the point and the map
+        # self.addParameter(
+            # QgsProcessingParameterDistance(
+                # self.MAXDIST,
+                # self.tr('Max distance from map point'),
+                # 30
+            # )
+        # )
+        
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
                 self.MAXDIST,
-                self.tr('Max distance from map point'),
-                30
+                self.tr('Max distance from map point (meters)'),
+                type=QgsProcessingParameterNumber.Double,
+                defaultValue=30.0
             )
         )
         
-        # shorter loop are removed
+        # # shorter loop are removed
+        # self.addParameter(
+            # QgsProcessingParameterDistance(
+                # self.MINLOOPSIZE,
+                # self.tr('Min loop size'),
+                # 15
+            # )
+        # )
+
         self.addParameter(
-            QgsProcessingParameterDistance(
+            QgsProcessingParameterNumber(
                 self.MINLOOPSIZE,
-                self.tr('Min loop size'),
-                15
+                self.tr('Minimum loop size (meters)'),
+                type=QgsProcessingParameterNumber.Double,
+                defaultValue=15.0
             )
         )
-
 
         # We add a feature sink in which to store our processed features (this
         # usually takes the form of a newly created vector layer when the
