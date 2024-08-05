@@ -32,6 +32,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import QgsProcessingProvider
 from .osm_map_matching_algorithm import OsmMapMatchingAlgorithm
+from PyQt5.QtGui import QIcon
 
 
 class OsmMapMatchingProvider(QgsProcessingProvider):
@@ -78,7 +79,10 @@ class OsmMapMatchingProvider(QgsProcessingProvider):
         Should return a QIcon which is used for your provider inside
         the Processing toolbox.
         """
-        return QgsProcessingProvider.icon(self)
+        import os
+        iconname = ''
+        #iconname = os.path.join(os.path.dirname(__file__), 'icon.jpg')
+        return QIcon(iconname)
 
     def longName(self):
         """

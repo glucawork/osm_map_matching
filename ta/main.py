@@ -13,7 +13,6 @@ import geopy.distance as distance
 import sys
 from geopy.point import Point
 
-
 sys.setrecursionlimit(1500)
 
 
@@ -141,7 +140,6 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
             path = clean_path
             
         return path
-
 
     # -------- Computing bounding box
     left,bottom,right,top, nextindex  = boundBBox(points_list, 0)

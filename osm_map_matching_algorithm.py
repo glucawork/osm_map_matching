@@ -31,6 +31,7 @@ __copyright__ = '(C) 2023 by G.Rossi'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication
+from PyQt5.QtGui import QIcon
 from qgis.core import (QgsProcessing,
                        QgsFeatureSink,
                        QgsProcessingAlgorithm,
@@ -38,7 +39,6 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterMultipleLayers,
-                       QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterVectorDestination,
@@ -79,14 +79,6 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
-        # the maximum tolerated distance between the point and the map
-        # self.addParameter(
-            # QgsProcessingParameterDistance(
-                # self.MAXDIST,
-                # self.tr('Max distance from map point'),
-                # 30
-            # )
-        # )
         
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -97,14 +89,6 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             )
         )
         
-        # # shorter loop are removed
-        # self.addParameter(
-            # QgsProcessingParameterDistance(
-                # self.MINLOOPSIZE,
-                # self.tr('Min loop size'),
-                # 15
-            # )
-        # )
 
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -130,6 +114,9 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         """
         Here is where the processing itself takes place.
         """
+        
+        import os
+        
 
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
@@ -151,6 +138,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         target_crs = QgsCoordinateReferenceSystem("EPSG:4326")
 
         feedback.pushInfo('Vector reading')
+
 
         points_list = []
 
@@ -220,3 +208,9 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
 
     def createInstance(self):
         return OsmMapMatchingAlgorithm()
+
+    def icon(self):
+        import os
+        #iconname = os.path.join(os.path.dirname(__file__), 'icon.jpg')
+        iconname = ''
+        return QIcon(iconname)
