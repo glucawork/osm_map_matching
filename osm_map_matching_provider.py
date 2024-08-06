@@ -91,3 +91,4 @@ class OsmMapMatchingProvider(QgsProcessingProvider):
         implementation returns the same string as name().
         """
         return self.name()
+        

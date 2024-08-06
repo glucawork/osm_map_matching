@@ -131,8 +131,6 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
 
         feedback.pushInfo('Vector reading')
         
-        feedback.pushInfo(out_shapefile)
-
         points_list = []
 
         for current, f in enumerate(features):
@@ -223,3 +221,12 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         iconname = os.path.join(os.path.dirname(__file__), 'icon.png')
         #iconname = ''
         return QIcon(iconname)
+
+    def shortHelpString(self):
+        # TODO
+        return '''This algorithm takes a vector layer of points that defines a route and creates a line layer that aligns this route with roads, streets, or paths from OpenStreetMap.
+        
+        The lines in the output layer are assigned the fields present in the original OpenStreetMap data.
+        
+        For more information https://github.com/glucatv/osm_map_matching
+        '''

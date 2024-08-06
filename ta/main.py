@@ -138,6 +138,9 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                         repeat = True
                 i += 1
             path = clean_path
+            if feedback.isCanceled():
+                PrintMessage('Cleaning interrupted')
+                break
             
         return path
 
@@ -294,7 +297,7 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
 
     # removing consecutive duplicates
     
-    PrintMessage('Cleaning')
+    PrintMessage("Press 'Cancel' to skip this part")
     path = remove_loops(path)
     
     return G, path
