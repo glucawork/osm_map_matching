@@ -11,10 +11,10 @@ author=Gianluca Rossi
 email=grossi@gmail.com
 
 about=This plugin takes a vector layer of points that defines a route and creates a line layer that aligns this route with roads, streets, or paths from OpenStreetMap.
-        
-The fields in the original OpenStreetMap data are applied to the lines in the output layer.
 
-Requires python modules networkx, geophy and heapq
+    The fields in the original OpenStreetMap data are applied to the lines in the output layer.
+    
+    Requires python modules networkx, geophy and heapq
 
 tracker=https://github.com/glucatv/osm_map_matching/issues
 repository=https://github.com/glucatv/osm_map_matching
@@ -27,7 +27,7 @@ hasProcessingProvider=yes
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=map mathing, openstreetmap, gps track, routing, route matching
+tags=map matching, openstreetmap, gps track, routing, route matching
 
 homepage=https://github.com/glucatv/osm_map_matching
 category=Analysis
