@@ -33,22 +33,14 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QCoreApplication
 from PyQt5.QtGui import QIcon
 from qgis.core import (QgsProcessing,
-                       QgsFeatureSink,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingParameterVectorDestination,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterFileDestination,
                        QgsVectorFileWriter,
-                       QgsWkbTypes, 
                        QgsProject)
-from qgis.core import QgsMessageLog
 
 from geopy.point import Point
 

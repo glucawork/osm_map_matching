@@ -4,11 +4,7 @@ from qgis.core import (
     QgsFeature,
     QgsGeometry,
     QgsPointXY,
-    QgsLineString,
-    QgsFields,
-    QgsWkbTypes,
-    QgsProject
-)
+    QgsFields,)
 from PyQt5.QtCore import QVariant
 import json
 
