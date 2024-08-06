@@ -226,7 +226,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         # TODO
         return '''This algorithm takes a vector layer of points that defines a route and creates a line layer that aligns this route with roads, streets, or paths from OpenStreetMap.
         
-        The lines in the output layer are assigned the fields present in the original OpenStreetMap data.
+        The fields in the original OpenStreetMap data are applied to the lines in the output layer.
         
         For more information https://github.com/glucatv/osm_map_matching
         '''
