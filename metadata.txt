@@ -5,12 +5,12 @@
 [general]
 name=Osm Map Matching
 qgisMinimumVersion=3.0
-description=Porcamiseria
+description=Plugin aligning route points with OpenStreetMap roads, including OSM fields
 version=0.1
 author=Gianluca Rossi
 email=grossi@gmail.com
 
-about=Provide a brief description of the plugin and its purpose.
+about=A plugin that uses OpenStreetMap data to align route points with roads, including original OSM fields
 
 tracker=http://bugs
 repository=http://repo
