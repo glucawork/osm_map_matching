@@ -44,6 +44,9 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterVectorDestination,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
+                       QgsProcessingParameterFileDestination,
+                       QgsVectorFileWriter,
+                       QgsWkbTypes, 
                        QgsProject)
 from qgis.core import QgsMessageLog
 
@@ -103,10 +106,11 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         # usually takes the form of a newly created vector layer when the
         # algorithm is run in QGIS).
         self.addParameter(
-            QgsProcessingParameterVectorDestination(
-                self.OUTPUT,
-                self.tr('Output File'),
-            )
+              QgsProcessingParameterFileDestination(
+                  self.OUTPUT,
+                  self.tr('Output File'),
+                  'ESRI Shapefiles (*.shp)',
+              )
         )
 
 
@@ -115,18 +119,14 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         Here is where the processing itself takes place.
         """
         
-        import os
-        
-
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
         source = self.parameterAsSource(parameters, self.VPOINTS, context)
-        output_layer = self.parameterAsLayer(parameters, self.OUTPUT, context)
+        out_shapefile = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
         max_dist = self.parameterAsDouble(parameters, self.MAXDIST, context)
         min_loop_size = self.parameterAsDouble(parameters, self.MINLOOPSIZE, context)
         
-        #fieldnames = [field.name() for field in source.fields()]
 
         # Compute the number of steps to display within the progress bar and
         # get features from source
@@ -138,7 +138,8 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         target_crs = QgsCoordinateReferenceSystem("EPSG:4326")
 
         feedback.pushInfo('Vector reading')
-
+        
+        feedback.pushInfo(out_shapefile)
 
         points_list = []
 
@@ -163,11 +164,27 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         if path != None:
             out_df = ta.make_out_dataframe(G, path, log=feedback)
             feedback.pushInfo('Vector output creation')
-            output_layer = output.make_vector(out_df)
-            QgsProject.instance().addMapLayer(output_layer)
+            olayer = output.make_vector(out_df)
+            QgsProject.instance().addMapLayer(olayer)
+            
+            # Write to an ESRI Shapefile format dataset using UTF-8 text encoding
+            save_options = QgsVectorFileWriter.SaveVectorOptions()
+            save_options.driverName = "ESRI Shapefile"
+            save_options.fileEncoding = "UTF-8"
+            transform_context = QgsProject.instance().transformContext()
+            error = QgsVectorFileWriter.writeAsVectorFormatV3(olayer,
+                                                              out_shapefile,
+                                                              transform_context,
+                                                              save_options)
+            if error[0] == QgsVectorFileWriter.NoError:
+                feedback.pushInfo("Output file created")
+            else:
+                feedback.pushInfo(error)
+        else:
+            out_shapefile = None
             
 
-        return {self.OUTPUT: output_layer}
+        return {self.OUTPUT: out_shapefile}
 
     def name(self):
         """
@@ -211,6 +228,6 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
 
     def icon(self):
         import os
-        #iconname = os.path.join(os.path.dirname(__file__), 'icon.jpg')
-        iconname = ''
+        iconname = os.path.join(os.path.dirname(__file__), 'icon.png')
+        #iconname = ''
         return QIcon(iconname)

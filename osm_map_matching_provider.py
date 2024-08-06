@@ -80,8 +80,7 @@ class OsmMapMatchingProvider(QgsProcessingProvider):
         the Processing toolbox.
         """
         import os
-        iconname = ''
-        #iconname = os.path.join(os.path.dirname(__file__), 'icon.jpg')
+        iconname = os.path.join(os.path.dirname(__file__), 'icon.png')
         return QIcon(iconname)
 
     def longName(self):
