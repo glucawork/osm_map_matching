@@ -36,4 +36,4 @@ def classFactory(iface):  # pylint: disable=invalid-name
     """
     #
     from .osm_map_matching import OsmMapMatchingPlugin
-    return OsmMapMatchingPlugin()
+    return OsmMapMatchingPlugin(iface)

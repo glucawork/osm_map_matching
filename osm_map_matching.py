@@ -37,6 +37,11 @@ import inspect
 from qgis.core import QgsApplication
 from .osm_map_matching_provider import OsmMapMatchingProvider
 
+from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtGui import QIcon
+
+import processing
+
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 
 if cmd_folder not in sys.path:
@@ -45,8 +50,9 @@ if cmd_folder not in sys.path:
 
 class OsmMapMatchingPlugin(object):
 
-    def __init__(self):
+    def __init__(self, iface):
         self.provider = None
+        self.iface = iface
 
     def initProcessing(self):
         """Init Processing provider for QGIS >= 3.8."""
@@ -55,6 +61,19 @@ class OsmMapMatchingPlugin(object):
 
     def initGui(self):
         self.initProcessing()
-
+        iconname = os.path.join(os.path.dirname(__file__), 'icon.png')
+        self.action = QAction(QIcon(iconname),u"Analyze", self.iface.mainWindow())
+        self.action.triggered.connect(self.run)
+        self.iface.addPluginToMenu(u"OSM Map Matching", self.action )
+        self.iface.addToolBarIcon(self.action)
+        
+    def run(self):
+        #TODO
+        processing.execAlgorithmDialog("Osm Map Matching:Analyze")
+        
     def unload(self):
         QgsApplication.processingRegistry().removeProvider(self.provider)
+        
+        self.iface.removePluginMenu(u"OSM Map Matching", self.action)
+        self.iface.removeToolBarIcon(self.action)
+
