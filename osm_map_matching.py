@@ -68,7 +68,6 @@ class OsmMapMatchingPlugin(object):
         self.iface.addToolBarIcon(self.action)
         
     def run(self):
-        #TODO
         processing.execAlgorithmDialog("Osm Map Matching:Analyze")
         
     def unload(self):
