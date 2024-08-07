@@ -169,7 +169,7 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             if error[0] == QgsVectorFileWriter.NoError:
                 feedback.pushInfo("Output file created")
             else:
-                feedback.pushInfo(error)
+                feedback.pushInfo(error[0])
         else:
             out_shapefile = None
             

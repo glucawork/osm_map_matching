@@ -27,5 +27,12 @@ On the "Plugin" menu, click on "Analyze" under the "OSM map matching" sub-menu.
 
 ![Analyze Window](pictures/how_to_use_analyze_window.png)
 
+Choose a vector layer of points from those loaded in the project, or select a file that contains one.
+
+Set the "Max distance" parameter to specify the maximum allowable distance between an input point and the map element to which it is mapped.
+
+Set the 'Minimum loop size' parameter for the cleaning phase. This parameter defines the minimum length of loops that will be retained in the output path. During this phase, all loops shorter than the specified value are removed from the solution. The output path is scanned multiple times to ensure all short loops are eliminated. This process can be time consuming but can be interrupted by pressing the 'Cancel' button.
+
+
 
 ## How to use the output
