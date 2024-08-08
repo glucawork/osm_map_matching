@@ -33,6 +33,10 @@ Set the "Max distance" parameter to specify the maximum allowable distance betwe
 
 Set the 'Minimum loop size' parameter for the cleaning phase. This parameter defines the minimum length of loops that will be retained in the output path. During this phase, all loops shorter than the specified value are removed from the solution. The output path is scanned multiple times to ensure all short loops are eliminated. This process can be time consuming but can be interrupted by pressing the 'Cancel' button.
 
-
+Choose a ESRI Shapefile for the output, by default it is a temporary file.
 
 ## How to use the output
+
+Upon completion of the algorithm, the new layer containing the output is loaded. This is a vector layer consisting of consecutive lines. Each line represents a segment of the route as a sequence of points, with additional fields detailing the segment's attributes, which are derived from OSM data. 
+
+![Attribute Table](pictures/how_to_use_attribute_table.jpg)
