@@ -45,7 +45,7 @@ To better understand what the plugin produces, it is helpful to look at the Attr
 
 Each row describes a line feature in the vector layer. The column information is sourced from OpenStreetMap. Some rows may contain more information than others, depending on the accuracy of the data from the source. However, the "highway" column is always present; it identifies the type of road, street, or path. These data can be used to analyze or to represent the original track in a more informative way.
 
-### Example 1: Statistics on the lengths of various types of roads, ways, and paths
+### Example: Statistics on the lengths of various types of roads, ways, and paths
 
 To generate statistics on the lengths of different types of roads or paths traversed by a route, start by adding a field to the attribute table that contains the length of each line. Then, use the "Statistics by categories" algorithm integrated into QGIS. The following animation illustrates the process in detail.
 
