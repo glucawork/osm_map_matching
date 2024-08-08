@@ -26,11 +26,11 @@ The solution used employs a topology-based algorithm that calculates the shortes
 
 # Statement of need
 
-As far as we know there exist three map matching plugin for QGIS, *Offline-MapMatching* [@Jung2019], *Assisted-MapMatching* [@Gelb], and *Here Route API Plugin* [#here].
+As far as we know there exist three map matching plugin for QGIS, *Offline-MapMatching* [@Jung2019], *Assisted-MapMatching* [@Gelb], and *Here Route API Plugin* [@here].
 
-The first two plugins use Hidden Markov Models, which are known for their high time complexity [@newson2009hidden], leading to long execution times. The third plugin is an interface for the HERE routing service. It requires registration, is not open source, and has a limit of 10,000 points. Our plugin's algorithm computes, for each input point $p$, the shortest-path tree of a small region centered around $p$, significantly improving its practical speed.
+The first two plugins use Hidden Markov Models, which are known for their high time complexity [@newson2009hidden], leading to long execution times. The third plugin is an interface for the HERE routing service. It requires registration, is not open source, and has a limit of 10,000 points. Additionally, we were unable to fully get the first two plugins to work, possibly due to lack of maintenance as they have not been updated in the past two years.
 
-Additionally, we were unable to fully get the two plugins to work, possibly due to lack of maintenance as they have not been updated in the past two years.
+Our plugin is fully open source, with no usage restrictions. Its algorithm, which is based on calculating shortest path trees over very small portions of the road network graph, makes it extremely fast.
 
 # Functionality
 
