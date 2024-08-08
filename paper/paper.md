@@ -92,4 +92,4 @@ Since the area covering the entire input vector layer can be extensive, smaller 
 Calculating the shortest distances to nodes that are too far from the root relative to $q$ is inefficient. To enhance performance, the construction of the shortest path trees are stopped when the distances exceed a cut-off value set at $1.5 \cdot \text{distance}(v_p, q)$.
 
 
-# References
+# Referencesc
