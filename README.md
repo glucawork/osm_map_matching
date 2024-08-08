@@ -8,7 +8,7 @@ The plugin uses the following modules: modules networkx, geophy and heapq
 
 ## Installation
 
-* Download the file [osm_map_matching.zip](dd)
+* Download the file [osm_map_matching.zip](osm_map_matching.zip)
 * From the "Plugin" menu, open "Manage and Install Plugins..."
 * Click on "Install from ZIP"
 * Select the zip file you just downloaded and press "Install Plugin"
