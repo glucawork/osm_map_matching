@@ -9,8 +9,10 @@ authors:
   - name: Gianluca Rossi
     orcid: 0000-0002-6440-8203
     equal-contrib: true
+    affiliation: 1
 affiliations:
  - name: Università di Tor Vergata - Roma, Italy
+ - index: 1
 date: 12 July 2024
 bibliography: paper.bib
 
