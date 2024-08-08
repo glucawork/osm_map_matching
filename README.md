@@ -47,6 +47,10 @@ Each row describes a line feature in the vector layer. The column information is
 
 ### Example 1: Statistics on the lengths of various types of roads, ways, and paths
 
+To generate statistics on the lengths of different types of roads or paths traversed by a route, start by adding a field to the attribute table that contains the length of each line. Then, use the "Statistics by categories" algorithm integrated into QGIS. The following animation illustrates the process in detail.
+
 ![Statistics](pictures/how_to_use_statistics.gif)
+
+
 
 
