@@ -12,7 +12,7 @@ authors:
     affiliation: 1
 affiliations:
  - name: Università di Tor Vergata - Roma, Italy
- - index: 1
+   index: 1
 date: 12 July 2024
 bibliography: paper.bib
 
