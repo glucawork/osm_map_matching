@@ -39,4 +39,14 @@ Choose a ESRI Shapefile for the output, by default it is a temporary file.
 
 Upon completion of the algorithm, the new layer containing the output is loaded. This is a vector layer consisting of consecutive lines. Each line represents a segment of the route as a sequence of points, with additional fields detailing the segment's attributes, which are derived from OSM data. 
 
+To better understand what the plugin produces, it is helpful to look at the Attribute Table of the layer. To do this, select the layer, right-click to open the context menu, and choose "Open Attribute Table".
+
 ![Attribute Table](pictures/how_to_use_attribute_table.jpg)
+
+Each row describes a line feature in the vector layer. The column information is sourced from OpenStreetMap. Some rows may contain more information than others, depending on the accuracy of the data from the source. However, the "highway" column is always present; it identifies the type of road, street, or path. These data can be used to analyze or to represent the original track in a more informative way.
+
+### Example 1: Statistics on the lengths of various types of roads, ways, and paths
+
+![Statistics](pictures/how_to_use_statistics.gif)
+
+
