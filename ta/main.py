@@ -222,7 +222,8 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                 if alledges == []:
                     mindist, mindist1 = 0, 0
                 else:
-                    (mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPathNew(Gp, alledges,  p )
+                    #(mindist, mindist1, startnode) = osm.closerNodeCloserEdgeInPathNew(Gp, alledges,  p )
+                    mindist, mindist1, startnode = osm.closerNodeCloserEdgeInPath3(Gp, alledges, dist, p, dd)
                 
                 if mindist1 != None and abs(mindist-mindist1) < 3:
                     startnode = x
@@ -298,7 +299,7 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
     # removing consecutive duplicates
     
     PrintMessage("Press 'Cancel' to skip this part")
-    path = remove_loops(path)
+    #path = remove_loops(path)
     
     return G, path
 
