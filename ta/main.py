@@ -227,7 +227,7 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                 else:
                     #mindist, mindist1, startnode = osm.closerNodeCloserEdgeInPathNew(Gp, alledges,  p )
                     mindist, mindist1, startnode = osm.closerNodeCloserEdgeInPath3(Gp, alledges, dist, p, dd)
-                    PrintMessage(str(dist[startnode])+' '+str(dd))
+                    #PrintMessage(str(dist[startnode])+' '+str(dd))
                 
                 if mindist1 != None and abs(mindist-mindist1) < 3:
                     startnode = x
