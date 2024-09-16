@@ -302,6 +302,7 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
 
     # removing consecutive duplicates
     
+    PrintMessage("Remove loops")
     PrintMessage("Press 'Cancel' to skip this part")
     path = remove_loops(path)
     
