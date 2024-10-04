@@ -106,6 +106,9 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
             max_loop_size
         '''
         def find(a, p, e):
+            '''
+            looks for e in a[p:], return its position and the distance in the path a
+            '''
             dist = 0
             while p < len(a):
                 if a[p] == e:
@@ -131,7 +134,7 @@ def analyze(points_list, max_dist, min_loop_size, feedback = None):
                 if clean_path == [] or x != clean_path[-1]:
                     clean_path.append(x)
                     j,d = find(path, i+1, x)
-                    if j >= 0 and d < min_loop_size:
+                    if j >= 0 and d < min_loop_size and (i == 0 or j == len(path)-1 or path[i-1] != path[j+1]):
                         i = j
                         # This loop might be contained in a larger one.
                         # In the next iteration, we will check if this needs to be removed
