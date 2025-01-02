@@ -4,9 +4,9 @@
 
 [general]
 name=Osm Map Matching
-qgisMinimumVersion=3.0
+qgisMinimumVersion=3.14.12
 description=Plugin aligning route points with OpenStreetMap roads, including OSM fields
-version=1.0
+version=1.1
 author=Gianluca Rossi
 email=grossi@gmail.com
 
@@ -16,36 +16,21 @@ about=This plugin takes a vector layer of points that defines a route and create
     
     Requires python modules networkx, geophy and heapq
 
-tracker=https://github.com/glucatv/osm_map_matching/issues
-repository=https://github.com/glucatv/osm_map_matching
+tracker=https://github.com/glucawork/osm_map_matching/issues
+repository=https://github.com/glucawork/osm_map_matching
 # End of mandatory metadata
 
 # Recommended items:
 
-hasProcessingProvider=yes
+#hasProcessingProvider=yes
 # Uncomment the following line and add your changelog:
 # changelog=
 
 # Tags are comma separated with spaces allowed
-tags=map matching, openstreetmap, gps track, routing, route matching
+#tags=map matching, openstreetmap, gps track, routing, route matching
 
-homepage=https://github.com/glucatv/osm_map_matching
+homepage=https://github.com/glucawork/osm_map_matching
 category=Analysis
 icon=icon.png
-# experimental flag
-experimental=True
 
-# deprecated flag (applies to the whole plugin, not just a single version)
-deprecated=False
-
-# Since QGIS 3.8, a comma separated list of plugins to be installed
-# (or upgraded) can be specified.
-# Check the documentation for more information.
-# plugin_dependencies=
-
-Category of the plugin: Raster, Vector, Database or Web
-# category=
-
-# If the plugin can run on QGIS Server.
-server=False
 

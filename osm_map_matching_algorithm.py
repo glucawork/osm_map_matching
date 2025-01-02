@@ -36,14 +36,22 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterEnum,
                        QgsCoordinateTransform,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterFileDestination,
                        QgsVectorFileWriter,
-                       QgsProject)
+                       QgsProcessingException,
+                       QgsProject,
+                       QgsVectorLayer,
+                       QgsCoordinateTransformContext,
+                       QgsDataSourceUri)
 
 from geopy.point import Point
 
+import os
+import sqlite3
 
 from .ta import main as ta
 from . import output
@@ -54,9 +62,14 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
     # calling from the QGIS console.
 
     OUTPUT = 'OUTPUT'
+    OUTPUT_DB = 'OUTPUT_DB'
     VPOINTS = 'VECTOR_POINTS'
     MAXDIST = 'MAXDIST'
     MINLOOPSIZE = "MINLOOPSIZE"
+    ACTIVITYNAME = "ACTIVITYNAME"
+    ACTIVITYTYPE = "ACTIVITYTYPE"
+    
+    activities = ['', 'Run', 'Bike', 'Walk']
 
     def initAlgorithm(self, config):
         """
@@ -74,6 +87,23 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             )
         )
 
+        self.addParameter(
+            QgsProcessingParameterString(
+                self.ACTIVITYNAME,
+                self.tr('Activity name'),
+                defaultValue = '',
+            )
+        )
+        
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                self.ACTIVITYTYPE,
+                self.tr('Activity type'),
+                options = self.activities,
+                defaultValue = '',
+            )
+        )  
+        
         
         self.addParameter(
             QgsProcessingParameterNumber(
@@ -83,6 +113,8 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
                 defaultValue=30.0
             )
         )
+        
+      
         
 
         self.addParameter(
@@ -102,7 +134,19 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
                   self.OUTPUT,
                   self.tr('Output File'),
                   'ESRI Shapefiles (*.shp)',
+                  optional=True,
+                  createByDefault=False,
               )
+        )
+        
+        self.addParameter(
+            QgsProcessingParameterFileDestination(
+                self.OUTPUT_DB,
+                self.tr("Path to the SpatiaLite database"),
+                fileFilter="SQLite database (*.sqlite)",
+                optional=True,
+                createByDefault=False,
+            )
         )
 
 
@@ -116,9 +160,14 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
         # dictionary returned by the processAlgorithm function.
         source = self.parameterAsSource(parameters, self.VPOINTS, context)
         out_shapefile = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+        out_db = self.parameterAsFileOutput(parameters, self.OUTPUT_DB, context)
         max_dist = self.parameterAsDouble(parameters, self.MAXDIST, context)
         min_loop_size = self.parameterAsDouble(parameters, self.MINLOOPSIZE, context)
+        activity_name = self.parameterAsString(parameters, self.ACTIVITYNAME, context)
+        activity_type = self.parameterAsInt(parameters, self.ACTIVITYTYPE, context)
         
+        #if not out_db and not out_shapefile:
+        #    raise QgsProcessingException("At least one shapefile or database must be specified.")
 
         # Compute the number of steps to display within the progress bar and
         # get features from source
@@ -157,24 +206,168 @@ class OsmMapMatchingAlgorithm(QgsProcessingAlgorithm):
             olayer = output.make_vector(out_df)
             QgsProject.instance().addMapLayer(olayer)
             
-            # Write to an ESRI Shapefile format dataset using UTF-8 text encoding
-            save_options = QgsVectorFileWriter.SaveVectorOptions()
-            save_options.driverName = "ESRI Shapefile"
-            save_options.fileEncoding = "UTF-8"
-            transform_context = QgsProject.instance().transformContext()
-            error = QgsVectorFileWriter.writeAsVectorFormatV3(olayer,
-                                                              out_shapefile,
-                                                              transform_context,
-                                                              save_options)
-            if error[0] == QgsVectorFileWriter.NoError:
-                feedback.pushInfo("Output file created")
-            else:
-                feedback.pushInfo(error[0])
+            if out_shapefile:
+                # Write to an ESRI Shapefile format dataset using UTF-8 text encoding
+                save_options = QgsVectorFileWriter.SaveVectorOptions()
+                save_options.driverName = "ESRI Shapefile"
+                save_options.fileEncoding = "UTF-8"
+                transform_context = QgsProject.instance().transformContext()
+                error = QgsVectorFileWriter.writeAsVectorFormatV3(olayer,
+                                                                  out_shapefile,
+                                                                  transform_context,
+                                                                  save_options)
+                if error[0] == QgsVectorFileWriter.NoError:
+                    feedback.pushInfo("Output file created")
+                else:
+                    feedback.pushInfo(error[0])
+                    
+            if out_db:
+                feedback.pushInfo('Load on the DB')
+                
+                # # Connect to the SpatiaLite database
+                db_path = out_db
+                
+                linestrings_table_name = 'linestrings'
+                activities_table_name = 'activities'
+                
+                
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+                
+                try:
+                    conn.execute("BEGIN")
+                
+                    query = f"""
+                    CREATE TABLE IF NOT EXISTS {activities_table_name} (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        activity_name TEXT,
+                        activity_type TEXT
+                    );
+                    """
+                    conn.execute(query)
+                
+                    # query to add a new activity on the activity table
+                    print(activity_name)
+                    query_string =f"""INSERT INTO {activities_table_name} (activity_name, activity_type)
+                    VALUES ('{activity_name}', '{self.activities[activity_type]}');
+                    """
+                    cursor.execute(query_string) 
+                
+                    last_activity_id = cursor.lastrowid
+                
+                    # Query to check if the table linestrings table exists
+                    query = f"""
+                    SELECT name
+                    FROM sqlite_master
+                    WHERE type='table' AND name='{linestrings_table_name}';
+                    """
+                
+                    cursor.execute(query)
+                
+                    result = cursor.fetchone()
+                
+                    merge_tables = False
+                    if result:
+                        linestrings_table_name = 'temptable'
+                        feedback.pushInfo('Table linestrings exists')
+                        merge_tables = True
+                    
+                    conn.commit()
+                except sqlite3.Error as e:
+                    # Cancell all changes if error
+                    conn.rollback()
+                    print(f"Error duringdb operation: {e}")
+                finally:
+                    # Close connection
+                    conn.close()
+                    
+                # at this point:
+                # - the db contain the table "activities"
+                # - a new activity with id  "last_activity_id" is on the "activities" table
+                # - the next line strings must be added in the linestrings_table_name
+                #   table that can be "linestrings" if this one does not exist or "temptable"
+                    
+                    
+                # load new activity in the current table (linestrings_table_name)               
+                options = QgsVectorFileWriter.SaveVectorOptions()
+                options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+                options.EditionCapability = QgsVectorFileWriter.CanAddNewLayer
+                options.driverName="SQLite"
+                options.layerName = linestrings_table_name
+                options.layerOptions = ['SPATIALITE=YES']
+                error, error_message = QgsVectorFileWriter.writeAsVectorFormat(olayer, db_path, options)
+
+                if error == QgsVectorFileWriter.NoError:
+                    print("Layer successfully exported to the SQLite database.")
+                else:
+                    print(f"Error during export: {error_message}")
+                    
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+                query = f"""
+                ALTER TABLE {linestrings_table_name} ADD COLUMN activityid INTEGER;
+                """
+                cursor.execute(query)
+                conn.commit()
+                cursor.execute(f"UPDATE {linestrings_table_name} SET activityid = {last_activity_id}")
+                conn.commit()
+                
+                conn.close()
+
+                if merge_tables:
+                    # the temptable must be merged with the linestrings table
+                    conn = sqlite3.connect(db_path)
+                    
+                    conn.enable_load_extension(True)
+                    conn.load_extension('mod_spatialite')
+                    cursor = conn.cursor()
+                    
+                    # Name of the tables: source_table is the table with the new linestring
+                    # destination_table i the one that will collect all the linestrings
+                    source_table = 'temptable'  # Tabella da cui prendere i dati
+                    destination_table = 'linestrings'  # Tabella in cui inserire i dati
+                    
+                    # get all columns from the destination_table
+                    cursor.execute(f"PRAGMA table_info({destination_table});")
+                    existing_columns_names = set([info[1] for info in cursor.fetchall()])
+                    
+                    #print(existing_columns_names)
+                    
+                    # get all columns from the source_table
+                    cursor.execute(f"PRAGMA table_info({source_table});")
+                    source_columns = [info for info in cursor.fetchall()]
+                    
+                    #print(source_columns)
+                    
+                    for col in source_columns:
+                        if col[1] not in existing_columns_names:
+                            #print(f'add {col[1]} with type {col[2]}')
+                            cursor.execute(f"ALTER TABLE {destination_table} ADD COLUMN \"{col[1]}\" {col[2]};")
+
+                    source_columns_name = [f"\"{col[1]}\"" for col in source_columns]
+
+                    query = f"""
+                    INSERT INTO {destination_table} ({', '.join(source_columns_name[1:])})
+                    SELECT {', '.join(source_columns_name[1:])}
+                    FROM {source_table}
+                    """
+                    
+                    #print(query)
+
+                    cursor.execute(query)    
+                    
+                    query = f"DROP TABLE IF EXISTS {source_table};"
+                    cursor.execute(query)
+                    
+                    conn.commit()
+                    conn.close()                   
+                
         else:
             out_shapefile = None
             
+            
 
-        return {self.OUTPUT: out_shapefile}
+        return {self.OUTPUT: out_shapefile, self.OUTPUT_DB: out_db}
 
     def name(self):
         """
