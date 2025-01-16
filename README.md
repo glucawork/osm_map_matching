@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/827412848.svg)](https://doi.org/10.5281/zenodo.14674093)
 
 
-# OSM Map Matching
+# OSM Map Matching: A QGIS Plugin for Aligning and Matching OpenStreetMap Data
 
 A [QGIS](https://qgis.org)-plugin for matching a route with the [OpenStreetMap](https://www.openstreetmap.org) road network. The output is a linestring that can be optionally exported as a ESRI Shapefile or into a SQLite database.
 
