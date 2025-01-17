@@ -1,36 +1,31 @@
-# This file contains metadata for your plugin.
-
-# This file should be included when you package your plugin.# Mandatory items:
+# Mandatory items:
 
 [general]
-name=Osm Map Matching
-qgisMinimumVersion=3.14.12
-description=Plugin aligning route points with OpenStreetMap roads, including OSM fields
-version=1.1
+name=OSM Map Matching
 author=Gianluca Rossi
 email=grossi@gmail.com
+qgisMinimumVersion=3.14
+description=Aligns GPS route points with OpenStreetMap (OSM) roads and applies OSM data fields to the output layer.
+version=1.1
+experimental=False
 
-about=This plugin takes a vector layer of points that defines a route and creates a line layer that aligns this route with roads, streets, or paths from OpenStreetMap.
-
-    The fields in the original OpenStreetMap data are applied to the lines in the output layer.
-    
-    Requires python modules networkx, geophy and heapq
+about=The OSM Map Matching plugin processes a vector layer of route points and aligns them to OpenStreetMap (OSM) roads. 
+The plugin creates a line layer with enriched attributes from the OSM data, ensuring precise alignment of routes.
+This plugin requires the Python modules networkx, geopy, and python-heapq: see README.txt.
 
 tracker=https://github.com/glucawork/osm_map_matching/issues
 repository=https://github.com/glucawork/osm_map_matching
-# End of mandatory metadata
+homepage=https://github.com/glucawork/osm_map_matching
 
 # Recommended items:
 
-#hasProcessingProvider=yes
-# Uncomment the following line and add your changelog:
-# changelog=
-
-# Tags are comma separated with spaces allowed
-#tags=map matching, openstreetmap, gps track, routing, route matching
-
-homepage=https://github.com/glucawork/osm_map_matching
-category=Analysis
+tags=map matching, OpenStreetMap, GPS, routing, vector alignment
+category=Vector
 icon=icon.png
+server=False
+hasProcessingProvider=no
+deprecated=False
 
-
+changelog=
+    1.1 Added detailed OSM field mapping to output layers
+    1.0 Initial release
